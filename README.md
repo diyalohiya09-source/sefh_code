@@ -2,7 +2,7 @@
 
 ## FingerprintCore - N-Dimensional Metric Space Analysis
 
-A Python implementation for modeling and analyzing high-dimensional metric spaces. Supports points of arbitrary dimensionality (2D, 3D, and beyond) with operations for computing pairwise distances and diameter.
+A Java implementation for modeling and analyzing high-dimensional metric spaces. Supports points of arbitrary dimensionality (2D, 3D, and beyond) with operations for computing pairwise distances and diameter.
 
 ### Features
 
@@ -10,60 +10,57 @@ A Python implementation for modeling and analyzing high-dimensional metric space
 - **Dimension Validation**: Ensures all points in a collection have consistent dimensions
 - **Euclidean Distance Computation**: Calculates pairwise distances using the general N-dimensional Euclidean distance formula
 - **Diameter Calculation**: Finds the maximum distance between any two points in the collection
-- **Type Safety**: Validates input types and provides clear error messages
+- **Type Safety**: Validates input and provides clear error messages
 
 ### Installation
 
-No external dependencies required. Uses only Python standard library.
+No external dependencies required beyond JUnit for testing.
 
 ### Usage
 
 #### Basic Example (2D Points)
 
-```python
-from fingerprint_core import FingerprintCore
+```java
+FingerprintCore core = new FingerprintCore();
 
-# Create a new instance
-core = FingerprintCore()
+// Add 2D points
+core.addPoint(new double[]{0.0, 0.0});
+core.addPoint(new double[]{3.0, 4.0});
 
-# Add 2D points
-core.addPoint((0.0, 0.0))
-core.addPoint((3.0, 4.0))
+// Compute pairwise distances
+double[][] distances = core.computePairwiseDistances();
+System.out.println(distances[0][1]);  // Output: 5.0
 
-# Compute pairwise distances
-distances = core.computePairwiseDistances()
-print(distances[0][1])  # Output: 5.0
-
-# Compute diameter
-diameter = core.computeDiameter()
-print(diameter)  # Output: 5.0
+// Compute diameter
+double diameter = core.computeDiameter();
+System.out.println(diameter);  // Output: 5.0
 ```
 
 #### 3D Points
 
-```python
-core = FingerprintCore()
+```java
+FingerprintCore core = new FingerprintCore();
 
-# Add 3D points
-core.addPoint((0.0, 0.0, 0.0))
-core.addPoint((1.0, 1.0, 1.0))
-core.addPoint((2.0, 2.0, 2.0))
+// Add 3D points
+core.addPoint(new double[]{0.0, 0.0, 0.0});
+core.addPoint(new double[]{1.0, 1.0, 1.0});
+core.addPoint(new double[]{2.0, 2.0, 2.0});
 
-print(core.getDimension())  # Output: 3
-print(core.computeDiameter())  # Output: 3.464... (sqrt(12))
+System.out.println(core.getDimension());  // Output: 3
+System.out.println(core.computeDiameter());  // Output: 3.464... (sqrt(12))
 ```
 
 #### High-Dimensional Points
 
-```python
-core = FingerprintCore()
+```java
+FingerprintCore core = new FingerprintCore();
 
-# Add 5D points
-core.addPoint((0.0, 0.0, 0.0, 0.0, 0.0))
-core.addPoint((1.0, 1.0, 1.0, 1.0, 1.0))
+// Add 5D points
+core.addPoint(new double[]{0.0, 0.0, 0.0, 0.0, 0.0});
+core.addPoint(new double[]{1.0, 1.0, 1.0, 1.0, 1.0});
 
-distances = core.computePairwiseDistances()
-print(distances[0][1])  # Output: 2.236... (sqrt(5))
+double[][] distances = core.computePairwiseDistances();
+System.out.println(distances[0][1]);  // Output: 2.236... (sqrt(5))
 ```
 
 ### API Reference
@@ -72,49 +69,56 @@ print(distances[0][1])  # Output: 2.236... (sqrt(5))
 
 Creates a new FingerprintCore instance with an empty point collection.
 
-#### `addPoint(point: Tuple[float, ...]) -> None`
+#### `addPoint(double[] point)`
 
 Adds an N-dimensional point to the collection.
 
-- **Parameters**: `point` - A tuple or list of coordinates
-- **Raises**: 
-  - `ValueError` if point dimension doesn't match existing points
-  - `TypeError` if point is not a tuple or list
+- **Parameters**: `point` - An array of coordinates
+- **Throws**: 
+  - `IllegalArgumentException` if point dimension doesn't match existing points
+  - `IllegalArgumentException` if point is null or empty
 
-#### `computePairwiseDistances() -> List[List[float]]`
+#### `computePairwiseDistances()`
 
 Computes pairwise Euclidean distances between all points.
 
-- **Returns**: A symmetric 2D matrix where element [i][j] is the distance between points i and j
+- **Returns**: A symmetric 2D array where element [i][j] is the distance between points i and j
 
-#### `computeDiameter() -> float`
+#### `computeDiameter()`
 
 Computes the diameter (maximum distance) of the point set.
 
 - **Returns**: Maximum pairwise distance, or 0.0 if fewer than 2 points
 
-#### `getPoints() -> List[Tuple[float, ...]]`
+#### `getPoints()`
 
 Returns a copy of all points in the collection.
 
-#### `getDimension() -> Optional[int]`
+#### `getDimension()`
 
-Returns the dimension of points in the collection, or None if empty.
+Returns the dimension of points in the collection, or null if empty.
 
-#### `clear() -> None`
+#### `clear()`
 
 Removes all points from the collection.
 
-### Running Tests
+### Building and Running
 
+#### Compile the code:
 ```bash
-python -m unittest test_fingerprint_core.py -v
+javac FingerprintCore.java
 ```
 
-### Running Demo
-
+#### Run the demo:
 ```bash
-python demo.py
+javac FingerprintCoreDemo.java FingerprintCore.java
+java FingerprintCoreDemo
+```
+
+#### Run tests (requires JUnit):
+```bash
+javac -cp .:junit-4.13.2.jar:hamcrest-core-1.3.jar FingerprintCoreTest.java FingerprintCore.java
+java -cp .:junit-4.13.2.jar:hamcrest-core-1.3.jar org.junit.runner.JUnitCore FingerprintCoreTest
 ```
 
 ### Implementation Details
@@ -124,7 +128,7 @@ python demo.py
   d(p, q) = sqrt(sum((p_i - q_i)^2 for i in 1..N))
   ```
 - **Validation**: All points must have the same dimensionality within a single FingerprintCore instance
-- **Type Conversion**: Lists are automatically converted to tuples for internal consistency
+- **Immutability**: Points are copied on input and output to prevent external modifications
 
 ### Mathematical Background
 
