@@ -215,7 +215,7 @@ public class ShapeFactory {
     
     /**
      * Creates a hypercube in arbitrary dimension.
-     * @param dimension Dimension of the space
+     * @param dimension Dimension of the space (limited to 1-30 to avoid overflow)
      * @param sideLength Side length of the hypercube
      * @return A PointSet representing all vertices of the hypercube
      */
@@ -223,8 +223,11 @@ public class ShapeFactory {
         if (dimension < 1) {
             throw new IllegalArgumentException("Dimension must be at least 1");
         }
+        if (dimension > 30) {
+            throw new IllegalArgumentException("Dimension limited to 30 to avoid overflow (would have 2^" + dimension + " vertices)");
+        }
         
-        int numVertices = (int) Math.pow(2, dimension);
+        int numVertices = 1 << dimension; // Safe bit shift since dimension <= 30
         List<double[]> points = new ArrayList<>();
         double half = sideLength / 2.0;
         

@@ -142,4 +142,9 @@ public class ShapeFactoryTest {
         Random random = new Random(42);
         ShapeFactory.createRandomPointSet(10, 0, random); // Invalid dimension
     }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testHypercubeDimensionTooLarge() {
+        ShapeFactory.createHypercube(31, 1.0); // Exceeds maximum dimension limit
+    }
 }

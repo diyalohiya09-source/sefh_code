@@ -49,7 +49,7 @@ public class Fingerprint {
             // All points are the same, return all zeros except at scale 1.0
             double[] values = new double[scales.length];
             for (int i = 0; i < scales.length; i++) {
-                values[i] = (scales[i] >= 1.0) ? 1.0 : 0.0;
+                values[i] = (scales[i] == 1.0) ? 1.0 : 0.0;
             }
             return new Fingerprint(scales, values);
         }
